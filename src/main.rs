@@ -41,10 +41,6 @@ pub enum Object {
     Lambda(Vec<String>, Vec<Object>),
     List(Vec<Object>)
 }
-fn print_type<T>(_: &T) {
-    println!("{}", std::any::type_name::<T>())
-}
-
 
 // input: Vec<tokens>
 // output: AST
