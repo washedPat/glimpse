@@ -1,6 +1,8 @@
+#[allow(dead_code)]
 mod lexer;
 mod parser;
 mod eval;
+mod env;
 use crate::parser::parse;
 use crate::eval::eval;
 
@@ -11,7 +13,7 @@ use crate::eval::eval;
  * - write repl
  */
 fn main() {
-    let ast = parse("(+(+ 1 2)1)");
+    let ast = parse("(+ 1.5 2)");
     println!("ast: {:?}", &ast);
     eval(&ast);
 }

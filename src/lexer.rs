@@ -1,7 +1,7 @@
 
 #[derive(Debug, PartialEq)]
 pub enum Token {
-    Integer(i64),
+    Integer(f64),
     Symbol(String),
     LParen,
     RParen
@@ -20,7 +20,7 @@ pub fn lex(input: &str) -> Vec<Token> {
             "(" => tokens.push(Token::LParen),
             ")" => tokens.push(Token::RParen),
             _ => {
-                if let Ok(i) = word.parse::<i64>() {
+                if let Ok(i) = word.parse::<f64>() {
                     tokens.push(Token::Integer(i))
                 } else {
                     tokens.push(Token::Symbol(word.to_string()))

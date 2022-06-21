@@ -1,8 +1,10 @@
 use crate::lexer::*;
-#[derive(Debug,PartialEq, Clone)]
+
+#[allow(dead_code)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Object {
     Void, // an empty object
-    Integer(i64),
+    Integer(f64),
     Bool(bool),
     Symbol(String),
     Lambda(Vec<String>, Vec<Object>),
