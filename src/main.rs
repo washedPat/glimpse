@@ -5,7 +5,6 @@ use crate::parser::parse;
 use crate::eval::eval;
 
 /* TODO:
- * - refactor into separate files
  * - implement list evaluations
  * - implement default environment
  * - write tests
