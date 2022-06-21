@@ -32,7 +32,7 @@ fn lex(input: &str) -> Vec<Token> {
     tokens
 }
 
-#[derive(Debug,PartialEq)]
+#[derive(Debug,PartialEq, Clone)]
 pub enum Object {
     Void, // an empty object
     Integer(i64),
@@ -76,9 +76,33 @@ fn parse(tokens: &mut Vec<Token>) -> Object {
     Object::List(list)
 }
 
+fn eval_list(list: &Vec<Object>) -> Object{
+    todo!("implement list evaluations")
+}
+fn eval_symbol(sym: &String) -> Object{
+    todo!("implement symbol evaluations")
+}
+fn eval(obj: &Object) -> Object {
+    match obj {
+        Object::List(list) => eval_list(list),
+        Object::Void => Object::Void,
+        Object::Lambda(_params, _body) => Object::Void,
+        Object::Bool(_) => obj.clone(),
+        Object::Integer(n) => Object::Integer(*n), 
+        Object::Symbol(s) => eval_symbol(s)
+    }
+}
 
+/* TODO:
+ * - refactor into separate files
+ * - implement list evaluations
+ * - implement default environment
+ * - write tests
+ * - write repl
+ */
 fn main() {
     let mut tokens = lex("(+ 1 2)");
     let ast = parse(&mut tokens);
+    eval(&ast);
     println!("{:?}", &ast);
 }
