@@ -42,11 +42,17 @@ pub enum Object {
     List(Vec<Object>)
 }
 
+
+fn parse(program: &str) -> Object {
+    let mut tokens = lex(program);
+    tokens.reverse();
+    let parsed_list = parse_list(&mut tokens);
+    parsed_list
+}
 // input: Vec<tokens>
 // output: AST
 // desc: recursively parses tokens into an Object
-fn parse(tokens: &mut Vec<Token>) -> Object {
-    tokens.reverse();
+fn parse_list(tokens: &mut Vec<Token>) -> Object {
     if let Some(token) = tokens.pop() {
         if token != Token::LParen {
             panic!("Error: Expected LParen") 
@@ -63,7 +69,7 @@ fn parse(tokens: &mut Vec<Token>) -> Object {
                 Token::Symbol(s) => list.push(Object::Symbol(s)),
                 Token::LParen => {
                     tokens.push(Token::LParen);
-                    let sub_list = parse(tokens);
+                    let sub_list = parse_list(tokens);
                     list.push(sub_list);
                 },
                 Token::RParen => return Object::List(list),
@@ -101,8 +107,7 @@ fn eval(obj: &Object) -> Object {
  * - write repl
  */
 fn main() {
-    let mut tokens = lex("(+ 1 2)");
-    let ast = parse(&mut tokens);
-    eval(&ast);
-    println!("{:?}", &ast);
+    let ast = parse("(+(+ 1 2)1)");
+    println!("ast: {:?}", &ast);
+//    eval(&ast);
 }
