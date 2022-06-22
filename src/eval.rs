@@ -37,7 +37,20 @@ fn eval_binary_op(list: &Vec<Object>, env: &mut Rc<RefCell<Env>>) -> Object {
 
 
 fn eval_if(list: &Vec<Object>, env: &mut Rc<RefCell<Env>>) -> Object {
-    todo!();
+    if list.len() != 4 {
+        panic!("invalid number of arguments for if statement")
+    }
+    
+    let cond_obj = eval(&list[1], env);
+    let cond = match cond_obj {
+        Object::Bool(b) => b,
+        _ => panic!("condition must a be boolean")
+    };
+    
+    if cond {
+        return eval(&list[2], env);
+    }
+    return eval(&list[3], env);
 }
 
 fn eval_define(list: &Vec<Object>, env: &mut Rc<RefCell<Env>>) -> Object {
