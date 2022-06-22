@@ -69,10 +69,28 @@ fn eval_define(list: &Vec<Object>, env: &mut Rc<RefCell<Env>>) -> Object {
 }
 
 fn eval_func_def(list: &Vec<Object>) -> Object {
-    todo!();
+    let params = match &list[1] {
+        Object::List(list) => {
+            let mut params = Vec::new();
+            for param in list {
+                match param {
+                    Object::Symbol(s) => params.push(s.clone()),
+                    _ => panic!("invalid lambda parameter")
+                }
+            }
+            params
+        },
+        _ => panic!("invalid lambda")
+    };
+
+    let body = match &list[2] {
+        Object::List(list) => list.clone(),
+        _ => panic!("invalid lambda")
+    };
+    Object::Lambda(params, body)
 }
 
-fn eval_func_call(sym: String, list: &Vec<Object>, env: &mut Rc<RefCell<Env>>) -> Object {
+fn eval_func_call(sym: &str, list: &Vec<Object>, env: &mut Rc<RefCell<Env>>) -> Object {
     todo!();
 }
  
@@ -86,7 +104,7 @@ fn eval_list(list: &Vec<Object>, env: &mut Rc<RefCell<Env>>) -> Object {
             "if" => eval_if(&list, env),
             "def" => eval_define(&list, env),
             "lambda" => eval_func_def(&list),
-           _ => todo!() 
+           _ => eval_func_call(&s, &list, env), 
         },
         _ => {
             let mut sub_list = Vec::new(); 
