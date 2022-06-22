@@ -24,6 +24,10 @@ impl Env {
                 .and_then(|o| o.borrow().get(name).clone())
         }
     }
+
+    pub fn set(&mut self, name: &str, val: Object) {
+        self.vars.insert(name.to_string(), val);
+    }
 }
 
 pub fn new_env() -> Rc<RefCell<Env>> {

@@ -35,16 +35,57 @@ fn eval_binary_op(list: &Vec<Object>, env: &mut Rc<RefCell<Env>>) -> Object {
     };
 }
 
-fn eval_list(list: &Vec<Object>, env: &mut Rc<RefCell<Env>>) -> Object{
+
+fn eval_if(list: &Vec<Object>, env: &mut Rc<RefCell<Env>>) -> Object {
+    todo!();
+}
+
+fn eval_define(list: &Vec<Object>, env: &mut Rc<RefCell<Env>>) -> Object {
+    if list.len() != 3 {
+        panic!("invalid number of args for def");
+    }
+
+    let sym = match &list[1] {
+        Object::Symbol(s) => s.clone(),
+        _ => panic!("invalid define")
+    };
+
+    let val = eval(&list[2], env);
+    env.borrow_mut().set(&sym, val);
+    Object::Void
+}
+
+fn eval_func_def(list: &Vec<Object>) -> Object {
+    todo!();
+}
+
+fn eval_func_call(sym: String, list: &Vec<Object>, env: &mut Rc<RefCell<Env>>) -> Object {
+    todo!();
+}
+ 
+fn eval_list(list: &Vec<Object>, env: &mut Rc<RefCell<Env>>) -> Object {
     let head = &list[0];
     match head {
         Object::Symbol(s) => match s.as_str() {
             "+" | "-" | "*" | "/" | ">" | ">=" | "<" | "<=" => {
                 return eval_binary_op(&list, env);
             }
+            "if" => eval_if(&list, env),
+            "def" => eval_define(&list, env),
+            "lambda" => eval_func_def(&list),
            _ => todo!() 
         },
-        _ => todo!()
+        _ => {
+            let mut sub_list = Vec::new(); 
+            for obj in list {
+                let result = eval(obj, env);             
+                match result {
+                    Object::Void => {},
+                    _ => sub_list.push(result),
+                }
+            }
+            Object::List(sub_list)
+        }
     }
 }
 

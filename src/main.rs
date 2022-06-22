@@ -6,8 +6,7 @@ mod env;
 use crate::parser::parse;
 use crate::eval::eval;
 use crate::env::new_env;
-use std::io;
-use promptly::prompt;
+use std::io; 
 
 /* TODO:
  * - implement list evaluations
@@ -16,17 +15,19 @@ use promptly::prompt;
  * - write repl
  */
 
-fn readline(s: &mut String) -> io::Result<()> {
-    io::stdin().read_line(s)?;
-    return Ok(())
+fn readline() -> String {
+   let mut input = String::new();
+   io::stdin().read_line(&mut input).expect("Error: failed to read from stdin");
+   input
 }
 
 fn main() {
+    let mut env = new_env(); 
     loop {
-        let input: String = prompt("=> ");
+        println!("glimpse => ");
+        let input: String = readline();
         let program = input.as_str(); 
         let ast = parse(program);
-        let mut env = new_env(); 
         let result = eval(&ast, &mut env);
         println!("result: {:?}", result);
     }
