@@ -28,6 +28,13 @@ impl Env {
     pub fn set(&mut self, name: &str, val: Object) {
         self.vars.insert(name.to_string(), val);
     }
+
+    pub fn extend(parent: Rc<RefCell<Self>>) -> Env {
+        Env {
+            vars: HashMap::new(),
+            parent: Some(parent)
+        }
+    }
 }
 
 pub fn new_env() -> Rc<RefCell<Env>> {

@@ -91,7 +91,23 @@ fn eval_func_def(list: &Vec<Object>) -> Object {
 }
 
 fn eval_func_call(sym: &str, list: &Vec<Object>, env: &mut Rc<RefCell<Env>>) -> Object {
-    todo!();
+    let lambda = env.borrow_mut().get(sym);
+    if lambda.is_none() {
+        panic!("unbound symbol: {}", sym);
+    }
+
+    let func = lambda.unwrap();
+    match func {
+        Object::Lambda(params, body) => {
+            let mut new_env = Rc::new(RefCell::new(Env::extend(env.clone())));
+            for (i, param) in params.iter().enumerate() {
+                let val = eval(&list[i + 1], env);
+                new_env.borrow_mut().set(param, val);
+            }
+            return eval(&Object::List(body), &mut new_env);
+        }
+        _ => panic!("not a lambda: {}", sym),
+    }
 }
  
 fn eval_list(list: &Vec<Object>, env: &mut Rc<RefCell<Env>>) -> Object {
