@@ -1,0 +1,5 @@
+(def sqr (lambda (x) (* x x)))
+
+(def x 2)
+
+(+ (sqr x) 0)

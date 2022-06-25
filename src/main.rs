@@ -7,12 +7,11 @@ use crate::parser::parse;
 use crate::eval::eval;
 use crate::env::new_env;
 use std::io; 
+use std::env::args;
+use std::fs;
 
 /* TODO:
- * - implement list evaluations
- * - implement default environment
  * - write tests
- * - write repl
  */
 
 fn readline() -> String {
@@ -22,13 +21,44 @@ fn readline() -> String {
 }
 
 fn main() {
-    let mut env = new_env(); 
-    loop {
-        println!("glimpse => ");
-        let input: String = readline();
-        let program = input.as_str(); 
-        let ast = parse(program);
-        let result = eval(&ast, &mut env);
-        println!("result: {:?}", result);
+    let mut mode = &String::from("repl");
+    let args: Vec<String> = args().collect();
+    if args.len() > 1 {
+        mode = &args[1];
+    }
+    match mode.as_str(){
+        "repl" => {
+            let mut env = new_env(); 
+            loop {
+                println!("glimpse => ");
+                let input: String = readline();
+                let program = input.as_str(); 
+                let ast = parse(program);
+                let result = eval(&ast, &mut env);
+                println!("result: {:?}", result);
+            }
+        },
+        "run" => {
+            todo!("running files does not work yet :/");
+            if args.len() < 3 {
+                panic!("error: no input file provided");
+            }
+            let filename = &args[2].as_str();
+            let input = match fs::read_to_string(filename) {
+                Ok(i) => i, 
+                Err(e) => panic!("could not find file: `{}`", e)
+            };
+            let program = input.as_str();
+            println!("program:\n {}", program);
+            let mut env = new_env(); 
+            let ast = parse(program);
+            println!("ast: {:?}", &ast);
+            let result = eval(&ast, &mut env);
+            println!("result: {:?}", result);
+        }
+        _ => {
+            println!("mode not recognized: `{}`", mode);
+            return;
+        }
     }
 }
